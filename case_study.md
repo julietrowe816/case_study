@@ -64,26 +64,17 @@ str(nyc_airbnb)
 
 ## Attempt solutions
 
-1)  How is review score impacted by location?
+1)  How is review score impacted by location? By neighborhood, then by
+    borough
 
 ``` r
-nyc_airbnb |>
+nyc_airbnb2 = nyc_airbnb |>
   group_by(neighbourhood) |>
   summarize(average_review_score = mean(review_scores_location, na.rm = TRUE)
   )
-```
 
-    ## # A tibble: 217 × 2
-    ##    neighbourhood              average_review_score
-    ##    <chr>                                     <dbl>
-    ##  1 Allerton                                   8.90
-    ##  2 Arden Heights                              9.83
-    ##  3 Arrochar                                   8.75
-    ##  4 Arverne                                    9.35
-    ##  5 Astoria                                    9.49
-    ##  6 Bath Beach                                 9.17
-    ##  7 Battery Park City                          9.85
-    ##  8 Bay Ridge                                  9.54
-    ##  9 Bay Terrace                                9.33
-    ## 10 Bay Terrace, Staten Island               NaN   
-    ## # ℹ 207 more rows
+nyc_airbnb3 = nyc_airbnb |>
+  group_by(neighbourhood_group) |>
+  summarize(average_review_score = mean(review_scores_location, na.rm = TRUE)
+  )
+```
