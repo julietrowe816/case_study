@@ -48,3 +48,15 @@ str(nyc_airbnb)
     ##  $ availability_365              : num [1:40753] 170 180 365 335 352 129 306 306 144 106 ...
 
 ## Brainstorm questions
+
+- Where are airbnbs most expensive?
+- How long are airbnbs active?
+  - Are airbnbs illegal and do they get shut down?
+- Which units have the most availability?
+- How is review score impacted by location?
+- How many apts are run by one host?
+  - Does that affect price?
+  - Does that vary by neighborhood?
+- Where are airbnbs?
+  - Borough? Neighborhood?
+  - Lat and long?
