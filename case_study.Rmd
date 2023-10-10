@@ -9,6 +9,7 @@ output: github_document
 ## Load packages and  data
 ```{r}
 library(tidyverse)
+library(dplyr)
 library(p8105.datasets)
 
 data(nyc_airbnb)
@@ -30,4 +31,15 @@ str(nyc_airbnb)
 - Where are airbnbs?
   - Borough? Neighborhood?
   - Lat and long?
+
+
+## Attempt solutions
+
+1) How is review score impacted by location?
+```{r}
+nyc_airbnb |>
+  group_by(neighbourhood) |>
+  summarize(average_review_score = mean(review_scores_location, na.rm = TRUE)
+  )
+```
 

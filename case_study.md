@@ -21,6 +21,7 @@ library(tidyverse)
     ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 ``` r
+library(dplyr)
 library(p8105.datasets)
 
 data(nyc_airbnb)
@@ -60,3 +61,29 @@ str(nyc_airbnb)
 - Where are airbnbs?
   - Borough? Neighborhood?
   - Lat and long?
+
+## Attempt solutions
+
+1)  How is review score impacted by location?
+
+``` r
+nyc_airbnb |>
+  group_by(neighbourhood) |>
+  summarize(average_review_score = mean(review_scores_location, na.rm = TRUE)
+  )
+```
+
+    ## # A tibble: 217 × 2
+    ##    neighbourhood              average_review_score
+    ##    <chr>                                     <dbl>
+    ##  1 Allerton                                   8.90
+    ##  2 Arden Heights                              9.83
+    ##  3 Arrochar                                   8.75
+    ##  4 Arverne                                    9.35
+    ##  5 Astoria                                    9.49
+    ##  6 Bath Beach                                 9.17
+    ##  7 Battery Park City                          9.85
+    ##  8 Bay Ridge                                  9.54
+    ##  9 Bay Terrace                                9.33
+    ## 10 Bay Terrace, Staten Island               NaN   
+    ## # ℹ 207 more rows
