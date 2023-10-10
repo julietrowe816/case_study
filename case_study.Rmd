@@ -1,0 +1,20 @@
+---
+title: "Case Study"
+author: "Juliet Rowe"
+date: "2023-10-10"
+output: github_document
+---
+
+
+## Load packages and  data
+```{r}
+library(tidyverse)
+library(p8105.datasets)
+
+data(nyc_airbnb)
+
+str(nyc_airbnb)
+```
+
+
+## Brainstorm questions
