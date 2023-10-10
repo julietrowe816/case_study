@@ -2,7 +2,7 @@
 title: "Case Study"
 author: "Juliet Rowe"
 date: "2023-10-10"
-output: github_document
+output: html_document
 ---
 
 
@@ -11,6 +11,7 @@ output: github_document
 library(tidyverse)
 library(dplyr)
 library(ggridges)
+library(leaflet)
 library(p8105.datasets)
 
 data(nyc_airbnb)
@@ -87,6 +88,26 @@ nyc_airbnb |>
 
 ```
 
+
+## Try to make a map
+```{r}
+nyc_airbnb |>
+    filter(price < 1000, room_type == "Entire home/apt", neighbourhood_group == "Manhattan") |>
+  ggplot(aes(x=lat, y=long, color=price)) + geom_point()
+```
+
+
+Try something else entirely.
+
+```{r}
+
+nyc_airbnb |>
+   filter(price < 1000, room_type == "Entire home/apt", neighbourhood_group == "Manhattan") |>
+  sample_n(800) |>
+  leaflet() |>
+  addProviderTiles(providers$CartoDB.Positron) |>
+  addCircleMarkers(~lat, ~long, radius=.5)
+```
 
 
 
