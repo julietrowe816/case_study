@@ -22,6 +22,7 @@ library(tidyverse)
 
 ``` r
 library(dplyr)
+library(ggridges)
 library(p8105.datasets)
 
 data(nyc_airbnb)
@@ -61,6 +62,121 @@ str(nyc_airbnb)
 - Where are airbnbs?
   - Borough? Neighborhood?
   - Lat and long?
+
+## Do some EDA
+
+``` r
+nyc_airbnb |>
+  count(neighbourhood_group)
+```
+
+    ## # A tibble: 5 × 2
+    ##   neighbourhood_group     n
+    ##   <chr>               <int>
+    ## 1 Bronx                 649
+    ## 2 Brooklyn            16810
+    ## 3 Manhattan           19212
+    ## 4 Queens               3821
+    ## 5 Staten Island         261
+
+``` r
+nyc_airbnb |>
+  group_by(neighbourhood_group, room_type) |>
+  summarize(median_price = median(price)) |>
+  pivot_wider(
+    names_from = room_type,
+    values_from = median_price
+  )
+```
+
+    ## `summarise()` has grouped output by 'neighbourhood_group'. You can override
+    ## using the `.groups` argument.
+
+    ## # A tibble: 5 × 4
+    ## # Groups:   neighbourhood_group [5]
+    ##   neighbourhood_group `Entire home/apt` `Private room` `Shared room`
+    ##   <chr>                           <dbl>          <dbl>         <dbl>
+    ## 1 Bronx                            100              55            43
+    ## 2 Brooklyn                         145              65            40
+    ## 3 Manhattan                        190              90            65
+    ## 4 Queens                           119              60            39
+    ## 5 Staten Island                    112.             55            25
+
+``` r
+nyc_airbnb |>
+  ggplot(aes(x=price)) +
+  geom_histogram() + 
+  facet_grid(neighbourhood_group ~ room_type)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](case_study_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+nyc_airbnb |>
+  filter(price >= 9500)
+```
+
+    ## # A tibble: 6 × 17
+    ##         id review_scores_location name     host_id host_name neighbourhood_group
+    ##      <dbl>                  <dbl> <chr>      <dbl> <chr>     <chr>              
+    ## 1  3103784                     10 A Priva…  9.83e6 Michael   Brooklyn           
+    ## 2  4737930                      8 Spanish…  1.24e6 Olson     Manhattan          
+    ## 3   187529                     NA $3200/m…  9.02e5 Georgia   Manhattan          
+    ## 4  9528920                      9 Quiet, …  3.91e6 Amy       Manhattan          
+    ## 5 16429718                     NA Charmin…  1.36e7 Lena      Brooklyn           
+    ## 6 12955683                      8 Great l…  3.57e7 Duan      Manhattan          
+    ## # ℹ 11 more variables: neighbourhood <chr>, lat <dbl>, long <dbl>,
+    ## #   room_type <chr>, price <dbl>, minimum_nights <dbl>,
+    ## #   number_of_reviews <dbl>, last_review <date>, reviews_per_month <dbl>,
+    ## #   calculated_host_listings_count <dbl>, availability_365 <dbl>
+
+``` r
+nyc_airbnb |>
+  filter(price < 1000, room_type == "Entire home/apt") |>
+  ggplot(aes(x=price)) +
+  geom_histogram() + 
+  facet_grid(. ~ neighbourhood_group)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](case_study_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+nyc_airbnb |>
+  filter(price < 1000, room_type == "Entire home/apt", neighbourhood_group == "Manhattan") |>
+  group_by(neighbourhood) |>
+  summarize(n_apt = n(), mean_price = mean(price)) |>
+  arrange(desc(mean_price))
+```
+
+    ## # A tibble: 32 × 3
+    ##    neighbourhood      n_apt mean_price
+    ##    <chr>              <int>      <dbl>
+    ##  1 Tribeca              100       358.
+    ##  2 NoHo                  61       312.
+    ##  3 Flatiron District     75       307.
+    ##  4 SoHo                 234       296.
+    ##  5 Theater District      93       282.
+    ##  6 Midtown              655       276.
+    ##  7 Battery Park City     44       271.
+    ##  8 Greenwich Village    282       256.
+    ##  9 Chelsea              765       255.
+    ## 10 Financial District   228       250.
+    ## # ℹ 22 more rows
+
+``` r
+nyc_airbnb |>
+    filter(price < 1000, room_type == "Entire home/apt", neighbourhood_group == "Manhattan") |>
+  mutate(neighbourhood = fct_reorder(neighbourhood, price)) |>
+  ggplot(aes(x=price, y=neighbourhood)) + geom_density_ridges()
+```
+
+    ## Picking joint bandwidth of 26.6
+
+![](case_study_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## Attempt solutions
 

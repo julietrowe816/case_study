@@ -10,6 +10,7 @@ output: github_document
 ```{r}
 library(tidyverse)
 library(dplyr)
+library(ggridges)
 library(p8105.datasets)
 
 data(nyc_airbnb)
@@ -31,6 +32,62 @@ str(nyc_airbnb)
 - Where are airbnbs?
   - Borough? Neighborhood?
   - Lat and long?
+  
+
+## Do some EDA
+```{r}
+nyc_airbnb |>
+  count(neighbourhood_group)
+```
+
+```{r}
+nyc_airbnb |>
+  group_by(neighbourhood_group, room_type) |>
+  summarize(median_price = median(price)) |>
+  pivot_wider(
+    names_from = room_type,
+    values_from = median_price
+  )
+```
+
+```{r}
+nyc_airbnb |>
+  ggplot(aes(x=price)) +
+  geom_histogram() + 
+  facet_grid(neighbourhood_group ~ room_type)
+```
+
+```{r}
+nyc_airbnb |>
+  filter(price >= 9500)
+```
+
+```{r}
+nyc_airbnb |>
+  filter(price < 1000, room_type == "Entire home/apt") |>
+  ggplot(aes(x=price)) +
+  geom_histogram() + 
+  facet_grid(. ~ neighbourhood_group)
+```
+
+```{r}
+nyc_airbnb |>
+  filter(price < 1000, room_type == "Entire home/apt", neighbourhood_group == "Manhattan") |>
+  group_by(neighbourhood) |>
+  summarize(n_apt = n(), mean_price = mean(price)) |>
+  arrange(desc(mean_price))
+  
+```
+
+```{r}
+nyc_airbnb |>
+    filter(price < 1000, room_type == "Entire home/apt", neighbourhood_group == "Manhattan") |>
+  mutate(neighbourhood = fct_reorder(neighbourhood, price)) |>
+  ggplot(aes(x=price, y=neighbourhood)) + geom_density_ridges()
+
+```
+
+
 
 
 ## Attempt solutions
@@ -47,4 +104,6 @@ nyc_airbnb3 = nyc_airbnb |>
   summarize(average_review_score = mean(review_scores_location, na.rm = TRUE)
   )
 ```
+
+
 
